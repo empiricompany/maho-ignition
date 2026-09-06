@@ -1,0 +1,30 @@
+/vendor
+composer.lock
+.phpstan.cache/
+.php-cs-fixer.cache
+.idea/
+.vscode/
+
+# Local tooling, caches, generated files and temporary artifacts
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+.phpunit.result.cache
+.phpstan.cache/
+.php-cs-fixer.cache
+/coverage/
+/build/
+/dist/
+/tmp/
+/cache/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.crt

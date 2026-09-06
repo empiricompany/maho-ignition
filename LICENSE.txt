@@ -1,0 +1,7 @@
+SPDX-License-Identifier: OSL-3.0
+
+OPEN SOFTWARE LICENSE (OSL) 3.0
+
+This package is distributed under the Open Software License version 3.0.
+The complete license text is available at:
+https://opensource.org/license/osl-3-0

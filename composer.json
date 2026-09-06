@@ -1,0 +1,54 @@
+{
+    "name": "empiricompany/maho-ignition",
+    "description": "Error pages and diagnostics integration for Maho Commerce using Spatie Ignition.",
+    "homepage": "https://github.com/empiricompany/maho-ignition",
+    "license": "OSL-3.0",
+    "type": "maho-module",
+    "keywords": [
+        "maho",
+        "magento",
+        "ignition",
+        "flare"
+    ],
+    "require": {
+        "php": ">=8.3",
+        "composer-runtime-api": "^2.0",
+        "spatie/ignition": "^1.15.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "*",
+        "mahocommerce/maho": "*",
+        "mahocommerce/maho-phpstan-plugin": "*",
+        "phpstan/phpstan": "*",
+        "phpstan/phpstan-deprecation-rules": "*",
+        "phpstan/phpstan-strict-rules": "*",
+        "rector/rector": "*"
+    },
+    "suggest": {
+        "openai-php/client": "OpenAI API client for Ignition's OpenAI solution provider."
+    },
+    "scripts": {
+        "test": "php tests/smoke.php",
+        "lint": "find app tests -type f -name '*.php' -exec php -l {} +",
+        "cs": "if [ -x vendor/bin/php-cs-fixer ]; then vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff; else ../../vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff; fi",
+        "phpstan": "vendor/bin/phpstan analyse",
+        "rector": "if [ -x vendor/bin/rector ]; then vendor/bin/rector --config=.rector.php --dry-run; else ../../vendor/bin/rector --config=.rector.php --dry-run; fi",
+        "check": ["@test", "@lint", "@cs", "@phpstan", "@rector"]
+    },
+    "config": {
+        "allow-plugins": {
+            "mahocommerce/maho-composer-plugin": true
+        },
+        "platform": {
+            "php": "8.3"
+        }
+    },
+    "extra": {
+        "maho-module": {
+            "code-pool": "community"
+        }
+    },
+    "support": {
+        "source": "https://github.com/empiricompany/maho-ignition"
+    }
+}
