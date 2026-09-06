@@ -77,7 +77,8 @@ accepts only these configuration keys:
 
 | Ignition error page | Configuration |
 |:---:|:---:|
-| ![Ignition error page](https://github.com/empiricompany/openmage_ignition/assets/5071467/f7c18948-de37-4071-b8e7-e185112c89aa) | ![Ignition settings](https://github.com/empiricompany/openmage_ignition/assets/5071467/d101ac76-92c2-40b3-8dcd-67efa9d1779c) |
+| ![Ignition error page](https://github.com/empiricompany/openmage_ignition/assets/5071467/f7c18948-de37-4071-b8e7-e185112c89aa) | <img width="674" height="700" alt="Ignition settings" src="https://github.com/user-attachments/assets/b6d45ba4-d552-43c0-aa2c-b7d1efac6581" />
+) |
 
 The screenshots are visual references inherited from the OpenMage
 integration; they do not document Maho-specific runtime behavior.
