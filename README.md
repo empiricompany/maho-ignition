@@ -1,4 +1,8 @@
 # Maho Ignition
+![Maho Commerce](https://img.shields.io/badge/Maho_Commerce-module-orange)
+![License](https://img.shields.io/badge/license-OSL--3.0-blue)
+![PHP](https://img.shields.io/badge/php-%3E%3D8.3-8892BF)
+![PHPStan Level](https://img.shields.io/badge/PHPStan-level%208-brightgreen)
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/empiricompany/maho-ignition.svg?style=flat-square)](https://packagist.org/packages/empiricompany/maho-ignition)
 [![Total Downloads](https://img.shields.io/packagist/dt/empiricompany/maho-ignition.svg?style=flat-square)](https://packagist.org/packages/empiricompany/maho-ignition)
