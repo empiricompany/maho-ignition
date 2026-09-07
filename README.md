@@ -29,6 +29,9 @@ The package is a Maho module published as `empiricompany/maho-ignition`.
 
 Open **System > Configuration > Advanced > Developer > Ignition Settings**.
 
+<img width="1685" height="708" alt="immagine" src="https://github.com/user-attachments/assets/4fd0bbf6-4dbc-4ee6-b0e1-8e9d02781f96" />
+
+
 Available settings include:
 
 1. **Enabled** — Enable or disable Ignition error pages.
