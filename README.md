@@ -75,13 +75,10 @@ accepts only these configuration keys:
 
 ## Screenshots
 
-| Ignition error page | Configuration |
+| Ignition error page | Flare |
 |:---:|:---:|
-| ![Ignition error page](https://github.com/empiricompany/openmage_ignition/assets/5071467/f7c18948-de37-4071-b8e7-e185112c89aa) | <img width="674" height="700" alt="Ignition settings" src="https://github.com/user-attachments/assets/b6d45ba4-d552-43c0-aa2c-b7d1efac6581" />
+| <img width="1381" height="974" alt="immagine" src="https://github.com/user-attachments/assets/68732015-4fad-4023-a1dd-82642a02d85b" /> | <img width="1842" height="979" alt="immagine" src="https://github.com/user-attachments/assets/c091aa20-97ef-4f06-88a5-5be570ec05c5" />
 ) |
-
-The screenshots are visual references inherited from the OpenMage
-integration; they do not document Maho-specific runtime behavior.
 
 ## License
 
