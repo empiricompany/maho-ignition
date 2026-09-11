@@ -24,4 +24,4 @@ jobs:
               run: php vendor/bin/php-cs-fixer fix --diff --dry-run
 
             - name: Rector
-              run: php vendor/bin/rector -c .rector.php --dry-run
+              run: php vendor/bin/rector --dry-run

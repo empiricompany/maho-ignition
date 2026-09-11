@@ -30,9 +30,9 @@
     "scripts": {
         "test": "php tests/smoke.php",
         "lint": "find app tests -type f -name '*.php' -exec php -l {} +",
-        "cs": "if [ -x vendor/bin/php-cs-fixer ]; then vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff; else ../../vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff; fi",
+        "cs": "vendor/bin/php-cs-fixer fix --dry-run --diff",
         "phpstan": "vendor/bin/phpstan analyse",
-        "rector": "if [ -x vendor/bin/rector ]; then vendor/bin/rector --config=.rector.php --dry-run; else ../../vendor/bin/rector --config=.rector.php --dry-run; fi",
+        "rector": "vendor/bin/rector --dry-run",
         "check": ["@test", "@lint", "@cs", "@phpstan", "@rector"]
     },
     "config": {

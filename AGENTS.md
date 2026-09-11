@@ -29,7 +29,7 @@ app/code/community/Maho/Ignition/controllers/        # Controllers
 tests/smoke.php                                       # Package smoke test
 .php-cs-fixer.php                                     # PHP-CS-Fixer configuration
 .phpstan.dist.neon                                    # PHPStan configuration
-.rector.php                                           # Rector configuration
+rector.php                                            # Rector configuration
 composer.json                                         # Authoritative package scripts
 ```
 
