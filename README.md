@@ -63,9 +63,14 @@ required for the Ignition UI or Flare integration.
 
 Ignition and Flare serve two different roles:
 
-- **Developer mode** renders the Ignition page. Ignition runs with
-  `inProductionEnvironment(false)`, which also suppresses its own Flare send,
-  so the report Ignition already built is forwarded to Flare explicitly.
+- **Developer mode** renders the Ignition page for HTML requests. Ignition runs
+  with `inProductionEnvironment(false)`, which also suppresses its own Flare
+  send, so the report Ignition already built is forwarded to Flare explicitly.
+  Because Ignition writes a full HTML document, the response is terminated as
+  soon as it renders (with a 500 status) so `Mage::printException()` cannot
+  append its raw `<pre>` dump after the page. This never interferes with API,
+  AJAX or JSON requests: for those the error is reported to Flare and the
+  response is left to Maho.
 - **Production** never instantiates Ignition. `FlareClient` is used directly:
   it registers error/exception handlers that report to Flare and then delegate
   to the previous (Maho) handler, so warnings are still logged instead of

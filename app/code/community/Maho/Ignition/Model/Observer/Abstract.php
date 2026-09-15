@@ -6,6 +6,7 @@ use Spatie\Ignition\Config\IgnitionConfig;
 use Spatie\Ignition\Ignition;
 use Spatie\Ignition\Solutions\OpenAi\OpenAiSolutionProvider;
 use Spatie\FlareClient\Flare;
+use Symfony\Component\HttpFoundation\AcceptHeader;
 
 abstract class Maho_Ignition_Model_Observer_Abstract extends Mage_Core_Model_Observer
 {
@@ -80,16 +81,27 @@ abstract class Maho_Ignition_Model_Observer_Abstract extends Mage_Core_Model_Obs
      * Handle an exception, keeping the developer-mode Ignition page and the
      * Flare reporting as two independent concerns.
      *
-     * Developer mode: Ignition renders the page. Spatie suppresses its own send
-     * because the instance runs with inProductionEnvironment(false), so the
-     * report is forwarded manually using the report Ignition already built.
+     * Developer mode + HTML request: Ignition renders the full error page and
+     * owns the response. Spatie suppresses its own send because the instance
+     * runs with inProductionEnvironment(false), so the report is forwarded
+     * manually using the report Ignition already built. The caller must
+     * terminate the response, otherwise Mage::printException() appends its own
+     * <pre> dump after the rendered document.
+     *
+     * Developer mode + non-HTML request (API/JSON): Ignition never renders; the
+     * exception is only reported to Flare and Maho owns the response.
      *
      * Production: Ignition is not involved at all. The standalone FlareClient
      * (no environment guard) reports the exception directly.
+     *
+     * @return bool True when Ignition rendered the error page and the caller
+     *              must terminate the response.
      */
-    protected function handleException(Throwable $exception): void
+    protected function handleException(Throwable $exception): bool
     {
-        if (Mage::getIsDeveloperMode()) {
+        if ($this->shouldRenderIgnition()) {
+            $this->prepareIgnitionResponse();
+
             $ignition = $this->getIgnitionInstance();
             $report = $ignition->handleException($exception);
 
@@ -97,11 +109,77 @@ abstract class Maho_Ignition_Model_Observer_Abstract extends Mage_Core_Model_Obs
                 $ignition->getFlare()->report($exception, report: $report);
             }
 
-            return;
+            return true;
         }
 
         if ($this->getFlareHelper()->canReport()) {
             $this->getFlareHelper()->getClient()->report($exception);
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether Ignition should render the error page for this request: only in
+     * developer mode, when Ignition is enabled, and for an HTML response.
+     * API and JSON requests are never given the Ignition HTML document.
+     */
+    protected function shouldRenderIgnition(): bool
+    {
+        return $this->getHelper()->shouldPrintIgnition() && $this->isHtmlRequest();
+    }
+
+    /**
+     * Whether the current request expects an HTML document, using the framework
+     * request API and content negotiation. CLI and the API area never qualify.
+     */
+    protected function isHtmlRequest(): bool
+    {
+        if (PHP_SAPI === 'cli') {
+            return false;
+        }
+
+        try {
+            $request = Mage::app()->getRequest();
+        } catch (\Throwable) {
+            return false;
+        }
+
+        if (!$request) {
+            return false;
+        }
+
+        // The API area answers with JSON, never with the Ignition HTML page
+        if (str_starts_with((string) $request->getModuleName(), 'api')) {
+            return false;
+        }
+
+        // No Accept header means "accept anything", including HTML
+        $accept = (string) $request->getHeader('Accept');
+        if ($accept === '') {
+            return true;
+        }
+
+        // A request that negotiates something other than HTML has no use for
+        // the rendered page: it is reported to Flare only
+        $acceptHeader = AcceptHeader::fromString(strtolower($accept));
+
+        return $acceptHeader->has('text/html') || $acceptHeader->has('*/*');
+    }
+
+    /**
+     * Answer with a 500 and emit the headers before Ignition starts writing its
+     * document: once the page is being written the status can no longer change,
+     * and the error page would be served with the default 200.
+     */
+    protected function prepareIgnitionResponse(): void
+    {
+        try {
+            $response = Mage::app()->getResponse();
+            $response->setHttpResponseCode(500);
+            $response->sendHeaders();
+        } catch (\Throwable) {
+            // Response not available: Ignition still renders, only the status is lost
         }
     }
 
