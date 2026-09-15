@@ -59,17 +59,32 @@ composer require openai-php/client
 `openai-php/client` is required for the AI solutions provider, but is not
 required for the Ignition UI or Flare integration.
 
-## Runtime error and Flare reporting limits
+## Runtime error and Flare reporting
 
-Some runtime PHP errors can render Ignition but are **not sent to Flare**:
-Ignition uses Maho's handler/renderer, while Flare applies Spatie's lifecycle
-and environment guards. Maho's `mage_run_installed_exception` and
-`mage_run_exception` hooks cover only exceptions caught by `Mage::run()`.
+Ignition and Flare serve two different roles:
 
-Pre-bootstrap errors, parse errors, and pre-bootstrap fatals are not
-interceptable. The developer-mode path is only an attempt, not a guarantee;
-no Maho patch is required. Check the Flare dashboard and PHP/application logs
-separately; never log the Flare key.
+- **Developer mode** renders the Ignition page. Ignition runs with
+  `inProductionEnvironment(false)`, which also suppresses its own Flare send,
+  so the report Ignition already built is forwarded to Flare explicitly.
+- **Production** never instantiates Ignition. `FlareClient` is used directly:
+  it registers error/exception handlers that report to Flare and then delegate
+  to the previous (Maho) handler, so warnings are still logged instead of
+  being turned into fatal errors, plus a shutdown hook that reports uncatchable
+  fatal errors (`error_get_last()`).
+
+`mage_run_installed_exception` / `mage_run_exception` cover late middleware / bootstrap
+exceptions. Ignition remains a developer-mode-only tool; Flare reporting is
+controlled separately by whether a key is configured.
+
+### Known limits
+
+`controller_front_init_before` (where the production handlers are registered)
+and `Mage::run()` only cover web requests, so **CLI and cron are not covered**,
+and neither are errors that happen before that event (store init, bad
+`local.xml`, DB down) or before bootstrap at all (parse errors, missing
+vendor). Fatal OOM can also prevent the shutdown hook from building the report.
+Delivery failures are swallowed by the Flare client; check the Flare dashboard
+and PHP/application logs separately, and never log the Flare key.
 
 ### Ignition configuration endpoint
 

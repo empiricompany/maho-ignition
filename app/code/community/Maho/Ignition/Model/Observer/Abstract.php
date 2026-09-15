@@ -64,7 +64,7 @@ abstract class Maho_Ignition_Model_Observer_Abstract extends Mage_Core_Model_Obs
         }
 
         $flareHelper = $this->getFlareHelper();
-        if ($flareHelper->isFlareEnabled() && !empty($flareHelper->getFlareApiKey())) {
+        if ($flareHelper->canReport()) {
             $_ignition->sendToFlare($flareHelper->getFlareApiKey());
             if ($flareHelper->shouldAnonymizeIp()) {
                 $_ignition->configureFlare(function (Flare $flare) {
@@ -77,16 +77,31 @@ abstract class Maho_Ignition_Model_Observer_Abstract extends Mage_Core_Model_Obs
     }
 
     /**
-     * Handle an exception while keeping Flare reporting independent from the
-     * developer-only Ignition page.
+     * Handle an exception, keeping the developer-mode Ignition page and the
+     * Flare reporting as two independent concerns.
+     *
+     * Developer mode: Ignition renders the page. Spatie suppresses its own send
+     * because the instance runs with inProductionEnvironment(false), so the
+     * report is forwarded manually using the report Ignition already built.
+     *
+     * Production: Ignition is not involved at all. The standalone FlareClient
+     * (no environment guard) reports the exception directly.
      */
     protected function handleException(Throwable $exception): void
     {
-        $ignition = $this->getIgnitionInstance();
-        $report = $ignition->handleException($exception);
+        if (Mage::getIsDeveloperMode()) {
+            $ignition = $this->getIgnitionInstance();
+            $report = $ignition->handleException($exception);
 
-        if (Mage::getIsDeveloperMode() && $this->getFlareHelper()->isFlareEnabled()) {
-            $ignition->getFlare()->report($exception, report: $report);
+            if ($this->getFlareHelper()->canReport()) {
+                $ignition->getFlare()->report($exception, report: $report);
+            }
+
+            return;
+        }
+
+        if ($this->getFlareHelper()->canReport()) {
+            $this->getFlareHelper()->getClient()->report($exception);
         }
     }
 

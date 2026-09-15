@@ -12,7 +12,7 @@ class Maho_Ignition_Model_Observer_HandleIgnitionException extends Maho_Ignition
     public function execute(\Maho\Event\Observer $observer): void
     {
         try {
-            if (!$this->getHelper()->shouldPrintIgnition() && !$this->getFlareHelper()->isFlareEnabled()) {
+            if (!$this->getHelper()->shouldPrintIgnition() && !$this->getFlareHelper()->canReport()) {
                 return;
             }
 

@@ -12,6 +12,7 @@ composer.lock
 *.bak
 *.orig
 .phpunit.result.cache
+.phpunit.cache/
 .phpstan.cache/
 .php-cs-fixer.cache
 /coverage/

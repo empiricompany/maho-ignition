@@ -32,5 +32,5 @@ jobs:
         run: composer phpstan
       - name: Run Rector in dry-run mode
         run: composer rector
-      - name: Run smoke test
+      - name: Run PHPUnit
         run: composer test

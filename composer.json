@@ -22,13 +22,19 @@
         "phpstan/phpstan": "*",
         "phpstan/phpstan-deprecation-rules": "*",
         "phpstan/phpstan-strict-rules": "*",
+        "phpunit/phpunit": "*",
         "rector/rector": "*"
     },
     "suggest": {
         "openai-php/client": "OpenAI API client for Ignition's OpenAI solution provider."
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Maho\\Ignition\\Tests\\": "tests/"
+        }
+    },
     "scripts": {
-        "test": "php tests/smoke.php",
+        "test": "vendor/bin/phpunit",
         "lint": "find app tests -type f -name '*.php' -exec php -l {} +",
         "cs": "vendor/bin/php-cs-fixer fix --dry-run --diff",
         "phpstan": "vendor/bin/phpstan analyse",

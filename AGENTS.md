@@ -13,7 +13,7 @@ module/MVC architecture.
 - Keep OpenAI and Flare optional. Never commit API keys, tokens, credentials, sensitive stack
   traces, or personal payloads.
 - Validate the supported `theme` and `editor` settings when configuration changes.
-- Update `tests/smoke.php` when behavior or configuration changes require coverage.
+- Extend the PHPUnit suite under `tests/` when behavior or configuration changes require coverage.
 - Do not invent utilities or scripts: `composer.json` is the source of truth.
 
 ## Package Layout
@@ -26,12 +26,20 @@ app/code/community/Maho/Ignition/Model/Observer/     # Exception and registratio
 app/code/community/Maho/Ignition/Helper/             # Configuration, Flare, and OpenAI helpers
 app/code/community/Maho/Ignition/Controller/         # Router
 app/code/community/Maho/Ignition/controllers/        # Controllers
-tests/smoke.php                                       # Package smoke test
+tests/                                                # PHPUnit suite
+phpunit.xml                                           # PHPUnit configuration
 .php-cs-fixer.php                                     # PHP-CS-Fixer configuration
 .phpstan.dist.neon                                    # PHPStan configuration
 rector.php                                            # Rector configuration
 composer.json                                         # Authoritative package scripts
+.github/workflows/                                    # CI gates + release on version tags
 ```
+
+## Releases
+
+Pushing a tag that is a plain semantic version (e.g. `1.0.0`, **without** the `v`
+prefix) triggers `.github/workflows/release.yml`, which publishes a GitHub
+release with generated notes. Harbor uses the `v` prefix; this package does not.
 
 ## Package Utility Commands
 
@@ -39,7 +47,7 @@ These are the scripts actually defined in this package's `composer.json`. The st
 the local Composer/PHP tools and is not equivalent to verification in the Harbor environment.
 Always use `--working-dir`; do not replace it with `cd`:
 
-- `composer --working-dir=./vendor/empiricompany/maho-ignition test` — runs `php tests/smoke.php`; expected exit code: `0` when the smoke test passes.
+- `composer --working-dir=./vendor/empiricompany/maho-ignition test` — runs `vendor/bin/phpunit`; expected exit code: `0` when the suite passes.
 - `composer --working-dir=./vendor/empiricompany/maho-ignition lint` — runs `php -l` for PHP files under `app` and `tests`; expected exit code: `0` when syntax checks pass.
 - `composer --working-dir=./vendor/empiricompany/maho-ignition cs` — runs PHP-CS-Fixer with `--dry-run --diff`; expected exit code: `0` when no style changes are needed.
 - `composer --working-dir=./vendor/empiricompany/maho-ignition phpstan` — runs PHPStan with `.phpstan.dist.neon`; expected exit code: `0` when no analysis errors are reported.
